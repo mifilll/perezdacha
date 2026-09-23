@@ -1,0 +1,1479 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#131f24">
+<title>ExamLingo — Технологии программирования</title>
+<style>
+:root {
+  --bg: #131f24;
+  --card: #1f2c34;
+  --card-hover: #26353e;
+  --text: #f1f7fb;
+  --muted: #8a9aa5;
+  --accent: #58cc02;
+  --accent-dark: #46a302;
+  --wrong: #ff4b4b;
+  --wrong-dark: #c73a3a;
+  --gold: #ffc800;
+  --blue: #1cb0f6;
+  --border: #37464f;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
+  width: 100%;
+}
+body {
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding-bottom: 20px;
+  line-height: 1.5;
+}
+button { font-family: inherit; font-size: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+img { max-width: 100%; height: auto; }
+.hidden { display: none !important; }
+
+/* ==== Topbar ==== */
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  padding-top: calc(12px + env(safe-area-inset-top, 0px));
+  max-width: 720px;
+  margin: 0 auto;
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  z-index: 10;
+}
+.topbar .back {
+  font-size: 22px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+.topbar .back:active { background: var(--card); color: var(--text); }
+.topbar .title {
+  flex: 1;
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+.stat {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 6px 9px;
+  border-radius: 20px;
+  background: var(--card);
+  flex-shrink: 0;
+}
+.stat.fire { color: #ff9600; }
+.stat.xp { color: var(--accent); }
+
+/* ==== Container ==== */
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 16px 20px;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* ==== Home ==== */
+.home-title {
+  font-size: 26px;
+  font-weight: 800;
+  margin: 20px 0 6px;
+  line-height: 1.2;
+}
+.home-sub {
+  color: var(--muted);
+  margin-bottom: 24px;
+  font-size: 15px;
+}
+.section-card {
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: 16px;
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  transition: .15s;
+  cursor: pointer;
+  margin-bottom: 12px;
+  width: 100%;
+  text-align: left;
+}
+.section-card:active {
+  border-color: var(--accent);
+  background: var(--card-hover);
+  transform: scale(0.99);
+}
+.section-emoji {
+  font-size: 32px;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(88,204,2,0.15);
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+.section-info { flex: 1; min-width: 0; }
+.section-info h3 { font-size: 16px; margin-bottom: 4px; }
+.section-info p { font-size: 13px; color: var(--muted); }
+.progress-bar {
+  margin-top: 8px;
+  height: 6px;
+  background: var(--bg);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.progress-bar > div {
+  height: 100%;
+  background: var(--accent);
+  transition: width .3s;
+}
+
+/* ==== List of lectures ==== */
+.item-list { display: flex; flex-direction: column; gap: 10px; }
+.list-item {
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  width: 100%;
+  transition: .15s;
+}
+.list-item:active {
+  border-color: var(--accent);
+  background: var(--card-hover);
+}
+.list-item.done {
+  border-color: var(--accent);
+  background: rgba(88,204,2,0.08);
+}
+.list-item .badge {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+.list-item.done .badge { background: var(--accent); color: #fff; }
+.list-item .body { flex: 1; min-width: 0; }
+.list-item .body h4 { font-size: 15px; margin-bottom: 3px; line-height: 1.3; }
+.list-item .body p { font-size: 12px; color: var(--muted); }
+.list-item .score {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+/* ==== Lesson ==== */
+.lesson-progress {
+  height: 10px;
+  background: var(--card);
+  border-radius: 5px;
+  overflow: hidden;
+  margin: 8px 0 22px;
+}
+.lesson-progress > div {
+  height: 100%;
+  background: var(--accent);
+  transition: width .25s;
+}
+.q-text {
+  font-size: 19px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  line-height: 1.35;
+  word-wrap: break-word;
+}
+.answers { display: flex; flex-direction: column; gap: 10px; }
+.answer {
+  padding: 14px 16px;
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  font-size: 15px;
+  text-align: left;
+  transition: .15s;
+  line-height: 1.4;
+  min-height: 52px;
+  word-wrap: break-word;
+  width: 100%;
+}
+.answer:active:not(.disabled) { border-color: var(--blue); }
+.answer.correct {
+  border-color: var(--accent);
+  background: rgba(88,204,2,0.15);
+}
+.answer.wrong {
+  border-color: var(--wrong);
+  background: rgba(255,75,75,0.12);
+}
+.answer.disabled { cursor: default; }
+
+/* ==== Feedback bar ==== */
+.feedback {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  padding: 14px 16px;
+  padding-bottom: calc(14px + var(--safe-bottom));
+  background: var(--card);
+  border-top: 2px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 20;
+  animation: slideUp .2s ease;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.feedback.ok { background: rgba(88,204,2,0.12); border-color: var(--accent); }
+.feedback.bad { background: rgba(255,75,75,0.12); border-color: var(--wrong); }
+.feedback .head {
+  font-size: 16px;
+  font-weight: 800;
+}
+.feedback.ok .head { color: var(--accent); }
+.feedback.bad .head { color: var(--wrong); }
+.feedback .desc {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+.feedback .btn { align-self: flex-end; }
+
+.btn {
+  padding: 12px 22px;
+  border-radius: 12px;
+  font-weight: 800;
+  font-size: 15px;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  transition: .1s;
+  border-bottom: 3px solid transparent;
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn:active { transform: translateY(2px); border-bottom-width: 1px; }
+.btn.primary {
+  background: var(--accent);
+  color: #fff;
+  border-bottom-color: var(--accent-dark);
+}
+.btn.wrong {
+  background: var(--wrong);
+  color: #fff;
+  border-bottom-color: var(--wrong-dark);
+}
+.btn.ghost {
+  background: transparent;
+  color: var(--muted);
+  border-bottom-color: transparent;
+}
+.btn.full { width: 100%; }
+
+/* ==== Complete ==== */
+.complete { text-align: center; padding: 30px 0; }
+.complete .big-emoji {
+  font-size: 72px;
+  margin-bottom: 14px;
+  animation: pop .4s ease;
+}
+@keyframes pop { 0% { transform: scale(0.5); } 70% { transform: scale(1.15); } 100% { transform: scale(1); } }
+.complete h2 { font-size: 24px; font-weight: 800; margin-bottom: 6px; }
+.complete .sub { color: var(--muted); margin-bottom: 24px; font-size: 14px; }
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 24px;
+}
+.stat-box {
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 6px;
+}
+.stat-box .icon { font-size: 22px; margin-bottom: 4px; }
+.stat-box .val { font-size: 20px; font-weight: 800; }
+.stat-box .lbl { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+/* ==== Lecture reading ==== */
+.lecture-body {
+  background: var(--card);
+  border-radius: 14px;
+  padding: 18px;
+  border: 2px solid var(--border);
+  margin-bottom: 20px;
+  overflow-x: hidden;
+}
+.lecture-body h2 {
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--accent);
+  margin: 20px 0 10px;
+  line-height: 1.3;
+}
+.lecture-body h2:first-child { margin-top: 0; }
+.lecture-body h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--blue);
+  margin: 16px 0 8px;
+}
+.lecture-body p {
+  font-size: 15px;
+  line-height: 1.6;
+  margin-bottom: 10px;
+  word-wrap: break-word;
+}
+.lecture-body ul, .lecture-body ol {
+  padding-left: 20px;
+  margin-bottom: 10px;
+}
+.lecture-body li {
+  font-size: 15px;
+  line-height: 1.55;
+  margin-bottom: 5px;
+  word-wrap: break-word;
+}
+.lecture-body code {
+  background: var(--bg);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'SF Mono', Consolas, Monaco, monospace;
+  font-size: 13px;
+  color: var(--blue);
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+.lecture-body pre {
+  background: var(--bg);
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  overflow-x: auto;
+  margin: 10px 0;
+  font-family: 'SF Mono', Consolas, Monaco, monospace;
+  line-height: 1.4;
+  -webkit-overflow-scrolling: touch;
+  max-width: 100%;
+}
+.lecture-body b { color: #fff; font-weight: 700; }
+.lecture-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+  font-size: 13px;
+  display: block;
+  overflow-x: auto;
+}
+.lecture-body th, .lecture-body td {
+  border: 1px solid var(--border);
+  padding: 6px 8px;
+  text-align: left;
+}
+.lecture-body th { background: var(--bg); font-weight: 700; }
+
+.reset-btn {
+  display: block;
+  margin: 30px auto 0;
+  color: var(--muted);
+  font-size: 12px;
+  text-decoration: underline;
+  padding: 10px;
+}
+
+/* ==== Utilities ==== */
+.mb-16 { margin-bottom: 16px; }
+.mt-16 { margin-top: 16px; }
+.center { text-align: center; }
+.text-muted { color: var(--muted); font-size: 14px; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+
+// ============================================================
+// ДАННЫЕ
+// ============================================================
+
+const COURSE = {
+  id: 'tp',
+  name: 'Технологии программирования',
+  emoji: '💻',
+  description: 'C#, .NET, ООП, LINQ, файлы, WinForms',
+
+  // -------- ЛЕКЦИИ --------
+  lectures: [
+    {
+      id: 'l1',
+      title: 'Лекция 1. C# и .NET. Ввод-вывод. Условия',
+      icon: '1️⃣',
+      sections: `
+        <h2>1. Кибернетические системы</h2>
+        <p><b>Кибернетическая система</b> — множество взаимосвязанных объектов, способных воспринимать, запоминать и перерабатывать информацию, а также обмениваться ею. Примеры: автопилот, компьютер, мозг, общество.</p>
+        <p>Кибернетика изучает системы абстрактно, независимо от их физической природы.</p>
+        <ul>
+          <li><b>Непрерывные</b> — все сигналы и состояния задаются непрерывными параметрами.</li>
+          <li><b>Дискретные</b> — все величины дискретны.</li>
+          <li><b>Гибридные (смешанные)</b> — оба типа параметров.</li>
+          <li><b>Замкнутые (изолированные)</b> — обмен сигналами только внутри системы.</li>
+          <li><b>Открытые</b> — есть входные и выходные каналы, обмен с внешней средой.</li>
+        </ul>
+        <p>Сложные системы отличаются от простых тем, что способны управлять своим поведением и обладают <b>памятью</b>.</p>
+
+        <h2>2. Типы программных систем</h2>
+        <ul>
+          <li><b>Встроенные (реального времени)</b> — комбинация оборудования и ПО. Примеры: станки с ЧПУ, радиолокация, транспорт. ПО работает непрерывно, в режиме реального времени.</li>
+          <li><b>Программно насыщенные</b> — включают компьютеры и пользователей. Примеры: банковские системы, резервирование авиабилетов, интернет. Работают нерегулярно, в ответ на запросы, без жёстких требований ко времени реакции.</li>
+          <li><b>Вычислительно-ориентированные</b> — сложные вычисления с большими данными. Примеры: прогноз погоды, криптография. Используют суперкомпьютеры и кластеры.</li>
+        </ul>
+
+        <h2>3. Подходы к разработке ПО</h2>
+        <ol>
+          <li><b>Процедурное</b> — основа — процедуры (именованные фрагменты). Обмен через аргументы. Реализовано в Pascal, C.</li>
+          <li><b>Модульное</b> — развитие процедурного. Стандартизация интерфейса модулей, каждый модуль функционально закончен. Turbo Pascal, C.</li>
+          <li><b>Нисходящее проектирование</b> — сначала основные функции, затем дополнительные. Пошаговое совершенствование.</li>
+          <li><b>Программирование с защитой от ошибок</b> — контроль входных данных, форматов, границ; контроль версий.</li>
+          <li><b>Функциональное</b> — программа как последовательность функций. Единственное действие — вызов функции. Пример — Лисп.</li>
+          <li><b>Логическое</b> — термины логики, отношения между объектами. Пример — Пролог.</li>
+          <li><b>Параллельное</b> — блоки выполняются одновременно. Проблема — синхронизация.</li>
+          <li><b>ООП</b> — самое перспективное. Три «кита»: <b>инкапсуляция</b> (объединение состояния и поведения, сокрытие), <b>наследование</b> (класс включает свойства предков), <b>полиморфизм</b> (класс играет роль предка, сохраняя своё поведение).</li>
+        </ol>
+
+        <h2>4. Язык C# и платформа .NET</h2>
+        <p><b>C#</b> — объектно-ориентированный язык, создан Microsoft под платформу .NET. Первая версия — февраль 2002, вместе с Visual Studio .NET. Синтаксис C-подобный, близок к C++ и Java. Поддерживает инкапсуляцию, наследование, полиморфизм, перегрузку операторов, статическую типизацию. Регистрозависим.</p>
+        <p><b>Платформа .NET</b> — основа для создания приложений. Основные черты:</p>
+        <ul>
+          <li><b>CLR</b> (Common Language Runtime) — общеязыковая среда исполнения, ядро.</li>
+          <li>Компиляция в <b>CIL</b> (Common Intermediate Language), поэтому модули могут быть на разных языках: C#, VB.NET, C++, F#, Delphi.NET.</li>
+          <li><b>JIT-компиляция</b> — CIL преобразуется в машинный код при запуске, только та часть, к которой идёт обращение. Скомпилированное сохраняется до конца работы.</li>
+          <li><b>Управляемый код</b> — CLR сама вызывает сборщик мусора. Есть и неуправляемый (C++), с ним .NET взаимодействует через COM.</li>
+          <li><b>Кроссплатформенность</b> — Windows, Linux, macOS, Android, iOS.</li>
+          <li>Единая библиотека классов для всех языков.</li>
+          <li>Разнообразие технологий: ADO.NET (БД), WPF (графика), ASP.NET (веб).</li>
+        </ul>
+
+        <h2>5. Консольный ввод-вывод</h2>
+        <p><b>Вывод:</b></p>
+        <ul>
+          <li><code>Console.WriteLine()</code> — выводит и переходит на новую строку.</li>
+          <li><code>Console.Write()</code> — без перехода.</li>
+          <li><b>Интерполяция:</b> <code>$"Имя: {name} Возраст: {age}"</code></li>
+          <li><b>Составное форматирование:</b> <code>"Имя: {0} Возраст: {1}", name, age</code> — нумерация с 0.</li>
+          <li>Форматный вывод: <code>{Height,7:F3}</code> — длина поля 7, 3 знака после запятой.</li>
+        </ul>
+        <p><b>Ввод:</b></p>
+        <ul>
+          <li><code>Console.ReadLine()</code> — всегда возвращает <b>строку</b>.</li>
+          <li>Для чисел: <code>Convert.ToInt32()</code>, <code>Convert.ToDouble()</code>, <code>Convert.ToDecimal()</code>.</li>
+          <li>Дробная часть зависит от локали: в России — запятая.</li>
+        </ul>
+        <p>Управляющие символы: <code>\\t</code> (табуляция), <code>\\"</code> (кавычка), <code>\\n</code> (перевод строки).</p>
+
+        <h2>6. Условные конструкции</h2>
+        <p><b>Операции сравнения:</b> <code>==</code>, <code>!=</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code> — возвращают <code>bool</code>.</p>
+        <p><b>Логические:</b> <code>||</code> (или), <code>&amp;&amp;</code> (и), <code>!</code> (не), <code>^</code> (исключающее или).</p>
+        <p><b>Тернарная:</b> <code>условие ? значение1 : значение2</code></p>
+        <pre>if (условие) { ... }
+else if (условие) { ... }
+else { ... }</pre>
+        <p>Блок <code>else</code> необязателен. Если одна инструкция — фигурные скобки можно опустить. В <code>switch</code> каждый <code>case</code> завершается <code>break</code>, иначе «провалится» в следующий.</p>
+      `,
+      test: [
+        { q: 'В каком году вышла первая версия языка C#?', options: ['1998', '2002', '2005', '2010'], correct: 1, explanation: 'C# вышел в феврале 2002 года вместе с Visual Studio .NET.' },
+        { q: 'Что такое CLR?', options: ['Язык программирования', 'Common Language Runtime — общеязыковая среда исполнения', 'Компилятор C#', 'Библиотека классов'], correct: 1, explanation: 'CLR — ядро платформы .NET, обеспечивает исполнение управляемого кода.' },
+        { q: 'В какой язык компилируется код на C#?', options: ['В машинный код', 'В CIL (Common Intermediate Language)', 'В C++', 'В JavaScript'], correct: 1, explanation: 'Все языки .NET компилируются в CIL — это позволяет объединять модули на разных языках.' },
+        { q: 'Что такое JIT-компиляция?', options: ['Компиляция всего кода заранее', 'Компиляция CIL в машинный код при запуске, по мере обращения', 'Компиляция в другой язык', 'Интерпретация построчно'], correct: 1, explanation: 'JIT компилирует CIL в машинный код при первом обращении, что повышает производительность.' },
+        { q: 'Какой тип возвращает Console.ReadLine()?', options: ['int', 'double', 'string', 'object'], correct: 2, explanation: 'Console.ReadLine() всегда возвращает string, даже если введено число.' },
+        { q: 'Какой тип возвращают операции сравнения?', options: ['int', 'bool', 'string', 'void'], correct: 1, explanation: 'Операции сравнения возвращают bool — true или false.' },
+        { q: 'Какие программные системы работают в режиме реального времени?', options: ['Встроенные', 'Программно насыщенные', 'Вычислительно-ориентированные', 'Все'], correct: 0, explanation: 'Встроенные (реального времени) системы работают непрерывно на встроенных микропроцессорах.' },
+        { q: 'Что из перечисленного НЕ является «китом» ООП?', options: ['Инкапсуляция', 'Наследование', 'Полиморфизм', 'Компиляция'], correct: 3, explanation: 'Три «кита» ООП: инкапсуляция, наследование, полиморфизм. Компиляция — не из них.' },
+        { q: 'Какая система является открытой?', options: ['Без входных и выходных каналов', 'С входными и выходными каналами', 'Только с входными', 'Только с выходными'], correct: 1, explanation: 'Открытая система обменивается сигналами с внешней средой — есть и входы, и выходы.' },
+        { q: 'Каким символом в России разделяется целая и дробная часть?', options: ['Точкой', 'Запятой', 'Пробелом', 'Двоеточием'], correct: 1, explanation: 'В русской локали разделитель — запятая (1,75). В англоязычной — точка.' }
+      ]
+    },
+    {
+      id: 'l2',
+      title: 'Лекция 2. Массивы. Строки. Методы',
+      icon: '2️⃣',
+      sections: `
+        <h2>1. Массивы</h2>
+        <p><b>Массив</b> — набор однотипных данных. Объявление: <code>int[] mass;</code></p>
+        <p>Выделение памяти: <code>int[] mass = new int[3];</code></p>
+        <p>Инициализация (равнозначные способы):</p>
+        <pre>int[] mass = new int[3] {1, 5, -2};
+int[] mass = new int[] {1, 5, -2};
+int[] mass = {1, 5, -2};</pre>
+        <p><b>Индексация с 0.</b> <code>mass.Length</code> — длина. Обращение за границы — ошибка.</p>
+        <p><b>Перебор:</b> <code>for</code> (гибче, даёт индекс), <code>foreach</code> (проще, только чтение), <code>while</code>.</p>
+        <p><b>Многомерные:</b> <code>int[,] arr = new int[2,3];</code> — матрица.<br>
+        <b>Зубчатый массив:</b> <code>int[][] arr = new int[3][];</code> — в каждой строке своё число элементов.</p>
+        <p>Количество строк: <code>arr.GetUpperBound(0) + 1</code>.<br>
+        Количество столбцов: <code>arr.Length / rows</code> или <code>arr.GetUpperBound(1) + 1</code>.</p>
+
+        <h2>2. Работа со строками</h2>
+        <p><code>string</code> — псевдоним <code>System.String</code>, последовательность Unicode. Строки <b>неизменяемы</b>: каждый метод возвращает новую строку.</p>
+        <p><b>Создание:</b></p>
+        <pre>string s1 = "hello";
+string s2 = new String('a', 6);  // "aaaaaa"
+string s3 = new String(new char[]{'w','o','r','l','d'}); // "world"</pre>
+        <p><b>Как массив:</b> <code>char c = s[2];</code>, <code>s.Length</code> — длина.</p>
+        <p><b>Основные методы:</b></p>
+        <ul>
+          <li><code>Compare</code> — сравнение (с локали);</li>
+          <li><code>Contains</code> — содержит подстроку;</li>
+          <li><code>Concat</code> / <code>+</code> — объединение;</li>
+          <li><code>Join</code> — соединение массива строк через разделитель;</li>
+          <li><code>IndexOf</code> / <code>LastIndexOf</code> — первое/последнее вхождение;</li>
+          <li><code>Insert</code> — вставка;</li>
+          <li><code>Replace</code> — замена;</li>
+          <li><code>Split</code> — деление на подстроки;</li>
+          <li><code>Substring</code> — обрезать часть;</li>
+          <li><code>Remove</code> — удалить часть;</li>
+          <li><code>Trim</code> — удалить пробелы;</li>
+          <li><code>ToUpper</code> / <code>ToLower</code> — регистр.</li>
+        </ul>
+        <p>Сравнение через <code>==</code> — по значению, не по ссылке.</p>
+
+        <h2>3. Методы</h2>
+        <p><b>Метод</b> — именованный блок кода.</p>
+        <pre>[модификаторы] тип_возврата Имя([параметры])
+{
+    // тело
+}</pre>
+        <p>Если метод ничего не возвращает — тип <code>void</code>. Возврат значения: <code>return значение;</code></p>
+        <p><b>Формальные параметры</b> — в объявлении. <b>Фактические (аргументы)</b> — при вызове. Типы и количество должны совпадать.</p>
+        <p><b>Необязательные параметры</b> — со значением по умолчанию; все следующие тоже должны быть необязательными.</p>
+        <p><b>Именованные параметры</b> — при вызове можно указать имя: <code>Sum(b: 3, a: 2)</code>.</p>
+        <p><b>Сокращённая запись:</b> <code>void SayHello() =&gt; Console.WriteLine("Hello");</code></p>
+        <p><b>Рекурсия</b> — метод вызывает сам себя. Обязательна точка возврата. Пример — факториал.</p>
+
+        <h2>4. Передача данных по значению</h2>
+        <p>Обычный способ. Метод получает <b>копию</b> переменной. Изменения внутри метода не влияют на исходную переменную.</p>
+        <pre>void Increment(int n) { n++; } // number снаружи не изменится</pre>
+
+        <h2>5. Передача данных по ссылке</h2>
+        <p>Модификатор <b>ref</b>. Указывается в заголовке и при вызове. Требует инициализации переменной до вызова.</p>
+        <pre>void Inc(ref int n) { n++; }
+int x = 5;
+Inc(ref x); // x = 6</pre>
+        <p><b>Выходные параметры — out.</b> Метод обязан присвоить значение. Позволяет вернуть несколько значений.</p>
+        <pre>void Sum(int a, int b, out int res) { res = a + b; }
+Sum(10, 15, out int result);</pre>
+        <p><b>in</b> — передача по ссылке только для чтения (нельзя изменить внутри).</p>
+        <p><b>ref</b> требует инициализации до вызова, <b>out</b> — нет, но метод обязан присвоить значение.</p>
+      `,
+      test: [
+        { q: 'С какого индекса начинается нумерация элементов массива?', options: ['С 1', 'С 0', 'С -1', 'Зависит от типа'], correct: 1, explanation: 'В C# индексация массивов с 0. Первый элемент — mass[0].' },
+        { q: 'Что возвращает свойство Length массива?', options: ['Тип элементов', 'Количество элементов', 'Индекс последнего', 'Размер в байтах'], correct: 1, explanation: 'mass.Length — количество элементов массива.' },
+        { q: 'В чём отличие foreach от for?', options: ['foreach быстрее', 'foreach только для чтения, без индекса', 'foreach только для int', 'Никакой разницы'], correct: 1, explanation: 'foreach перебирает элементы только для чтения и не даёт номер. for гибче.' },
+        { q: 'Что такое зубчатый массив?', options: ['Массив с дырами', 'Массив массивов int[][]', 'Двумерный int[,]', 'Массив строк'], correct: 1, explanation: 'int[][] — массив, где каждый подмассив может иметь свою длину.' },
+        { q: 'Как получить длину строки s?', options: ['s.Length', 's.Length()', 's.Size', 'len(s)'], correct: 0, explanation: 'Length — это свойство, без скобок.' },
+        { q: 'Каким методом разделить строку на слова?', options: ['Split', 'Substring', 'Replace', 'Trim'], correct: 0, explanation: 's.Split(new char[]{ \' \' }) вернёт массив подстрок.' },
+        { q: 'Что делает модификатор ref?', options: ['Копирует значение', 'Передаёт параметр по ссылке', 'Делает параметр необязательным', 'Возвращает значение'], correct: 1, explanation: 'ref передаёт адрес переменной, изменения в методе меняют исходную переменную.' },
+        { q: 'Что обязан сделать метод с out-параметром?', options: ['Ничего', 'Присвоить ему значение', 'Вернуть через return', 'Проверить на null'], correct: 1, explanation: 'Метод обязан присвоить значение out-параметру, иначе ошибка компиляции.' },
+        { q: 'Чем ref отличается от out?', options: ['Ничем', 'ref требует инициализации до вызова, out — нет', 'out быстрее', 'ref только для чисел'], correct: 1, explanation: 'ref требует инициализации, out — нет, но метод обязан присвоить значение.' },
+        { q: 'Что произойдёт с исходной переменной при передаче по значению?', options: ['Изменится', 'Не изменится', 'Удалится', 'Станет null'], correct: 1, explanation: 'При передаче по значению метод работает с копией — исходная не меняется.' }
+      ]
+    },
+    {
+      id: 'l3',
+      title: 'Лекция 3. LINQ',
+      icon: '3️⃣',
+      sections: `
+        <h2>LINQ — Language-Integrated Query</h2>
+        <p><b>LINQ</b> — единый язык запросов к разным источникам данных: массивы, коллекции, DataSet, XML. Пространство имён — <code>System.Linq</code>.</p>
+        <p><b>Разновидности:</b></p>
+        <ul>
+          <li><b>LINQ to Objects</b> — массивы и коллекции;</li>
+          <li><b>LINQ to Entities</b> — БД через Entity Framework;</li>
+          <li><b>LINQ to XML</b> — XML;</li>
+          <li><b>LINQ to DataSet</b> — DataSet;</li>
+          <li><b>PLINQ</b> — параллельные запросы.</li>
+        </ul>
+
+        <h2>Операторы запросов LINQ</h2>
+        <p>Похоже на SQL:</p>
+        <pre>var selected = from p in people
+               where p.ToUpper().StartsWith("T")
+               orderby p
+               select p;</pre>
+        <ul>
+          <li><code>from переменная in набор</code> — перебор;</li>
+          <li><code>where условие</code> — фильтр;</li>
+          <li><code>orderby</code> — сортировка;</li>
+          <li><code>select</code> — проекция в результат.</li>
+        </ul>
+
+        <h2>Методы расширения LINQ</h2>
+        <p>То же самое через цепочку методов:</p>
+        <pre>people.Where(p =&gt; p.ToUpper().StartsWith("T")).OrderBy(p =&gt; p);</pre>
+        <p>Основные методы:</p>
+        <ul>
+          <li><code>Select</code> — проекция;</li>
+          <li><code>Where</code> — фильтр;</li>
+          <li><code>OrderBy</code>, <code>OrderByDescending</code>, <code>ThenBy</code>, <code>ThenByDescending</code> — сортировка;</li>
+          <li><code>Join</code> — соединение коллекций;</li>
+          <li><code>GroupBy</code>, <code>ToLookup</code>, <code>GroupJoin</code> — группировка;</li>
+          <li><code>Aggregate</code> — свёртка;</li>
+          <li><code>Reverse</code>, <code>Distinct</code>, <code>Union</code>, <code>Intersect</code>, <code>Except</code>, <code>Concat</code>, <code>Zip</code> — операции над множествами;</li>
+          <li><code>All</code>, <code>Any</code>, <code>Contains</code> — проверки;</li>
+          <li><code>Count</code>, <code>Sum</code>, <code>Average</code>, <code>Min</code>, <code>Max</code> — агрегаты;</li>
+          <li><code>Take</code>, <code>Skip</code>, <code>TakeWhile</code>, <code>SkipWhile</code> — выборка части;</li>
+          <li><code>First</code>, <code>FirstOrDefault</code>, <code>Single</code>, <code>Last</code>, <code>ElementAt</code> — выбор одного.</li>
+        </ul>
+        <p>Операторы и методы можно <b>сочетать</b>:</p>
+        <pre>(from p in people where p.ToUpper().StartsWith("T") select p).Count()</pre>
+      `,
+      test: [
+        { q: 'Что такое LINQ?', options: ['Язык разметки', 'Единый язык запросов к источникам данных', 'Библиотека графики', 'Формат файла'], correct: 1, explanation: 'LINQ — единый язык запросов к массивам, коллекциям, БД, XML.' },
+        { q: 'Какая разновидность LINQ используется для БД через Entity Framework?', options: ['LINQ to Objects', 'LINQ to Entities', 'LINQ to XML', 'PLINQ'], correct: 1, explanation: 'LINQ to Entities — для работы с БД через Entity Framework.' },
+        { q: 'Что делает оператор Where?', options: ['Сортирует', 'Фильтрует по условию', 'Проецирует', 'Группирует'], correct: 1, explanation: 'Where оставляет только элементы, удовлетворяющие условию.' },
+        { q: 'Что делает метод Select?', options: ['Фильтрует', 'Проекция (преобразование) значений', 'Сортирует', 'Считает количество'], correct: 1, explanation: 'Select преобразует каждый элемент в новую форму.' },
+        { q: 'Что делает метод Count?', options: ['Считает сумму', 'Возвращает количество элементов', 'Находит первый', 'Сортирует'], correct: 1, explanation: 'Count() возвращает количество элементов в выборке.' },
+        { q: 'Какая разновидность LINQ для параллельных запросов?', options: ['LINQ to Objects', 'LINQ to Entities', 'PLINQ', 'LINQ to XML'], correct: 2, explanation: 'PLINQ (Parallel LINQ) — для параллельного выполнения запросов.' },
+        { q: 'Что делает метод OrderByDescending?', options: ['Сортирует по возрастанию', 'Сортирует по убыванию', 'Удаляет дубликаты', 'Фильтрует'], correct: 1, explanation: 'OrderByDescending сортирует по убыванию. OrderBy — по возрастанию.' }
+      ]
+    },
+    {
+      id: 'l4',
+      title: 'Лекция 4. Делегаты и события',
+      icon: '4️⃣',
+      sections: `
+        <h2>Делегаты</h2>
+        <p><b>Делегат</b> — объект, указывающий на метод (указатель на метод). Объявление:</p>
+        <pre>delegate void Message();
+delegate int Operation(int x, int y);</pre>
+        <p><b>Присвоение ссылки на метод</b> — два равноценных способа:</p>
+        <pre>Message mes = Hello;
+Operation op = new Operation(Add);</pre>
+        <p><b>Соответствие методов делегату</b>: совпадают возвращаемый тип и набор параметров (с учётом <code>ref</code>, <code>in</code>, <code>out</code>).</p>
+        <p><b>Список вызова:</b> делегат может указывать на несколько методов (<code>+=</code> добавить, <code>-=</code> убрать). При вызове все выполняются по очереди. Возвращается значение <b>последнего</b> метода.</p>
+        <pre>Message mes = Hello;
+mes += HowAreYou;  // теперь 2 метода
+mes();  // оба вызовутся</pre>
+        <p><b>Объединение делегатов:</b> <code>Message mes3 = mes1 + mes2;</code></p>
+        <p><b>Вызов:</b> <code>mes();</code> или <code>mes.Invoke();</code>. Если делегат null — исключение, поэтому <code>mes?.Invoke();</code></p>
+        <p><b>Обобщённые делегаты:</b> <code>delegate T Operation&lt;T, K&gt;(K val);</code></p>
+        <p>Делегаты могут быть <b>параметрами методов</b> и <b>возвращаться из методов</b>.</p>
+
+        <h2>События</h2>
+        <p><b>Событие</b> сигнализирует системе о действии. Объявление через <code>event</code>:</p>
+        <pre>delegate void AccountHandler(string message);
+event AccountHandler Notify;</pre>
+        <p><b>Вызов:</b> <code>Notify?.Invoke("текст");</code> — <code>?.</code> защищает от NullReferenceException, если нет обработчиков.</p>
+
+        <h2>Обработчики событий</h2>
+        <p>Добавляются через <code>+=</code>, удаляются через <code>-=</code>. Каждый обработчик должен соответствовать делегату по сигнатуре.</p>
+        <pre>account.Notify += DisplayMessage;
+account.Put(20);   // вызовет DisplayMessage
+account.Notify -= DisplayMessage;</pre>
+        <p>Обработчиками могут быть: методы, делегаты, анонимные методы, лямбда-выражения.</p>
+
+        <h2>Классы данных события</h2>
+        <p>Если событие должно передавать данные, создают класс-аргумент:</p>
+        <pre>class AccountEventArgs {
+    public string Message { get; }
+    public int Sum { get; }
+    public AccountEventArgs(string m, int s) { Message = m; Sum = s; }
+}</pre>
+        <p>Делегат принимает: <code>(object sender, AccountEventArgs e)</code> — отправитель и данные события.</p>
+
+        <h2>Управление обработчиками</h2>
+        <p>Аксессоры <code>add</code> / <code>remove</code> позволяют задать логику при добавлении/удалении обработчика (например, логирование).</p>
+      `,
+      test: [
+        { q: 'Что такое делегат?', options: ['Массив', 'Указатель на метод', 'Строка', 'Класс'], correct: 1, explanation: 'Делегат хранит ссылку на метод и позволяет его вызывать.' },
+        { q: 'Как добавить метод в делегат?', options: ['=', '+=', 'push', 'add'], correct: 1, explanation: 'Оператор += добавляет метод в список вызова делегата. -= удаляет.' },
+        { q: 'Что возвращает делегат с несколькими методами?', options: ['Первого метода', 'Последнего метода', 'Сумму всех', 'Ничего'], correct: 1, explanation: 'Все методы выполняются, но возвращается результат только последнего.' },
+        { q: 'Как объявить событие?', options: ['delegate event Name;', 'event DelegateName Name;', 'class Event Name;', 'public void Event;'], correct: 1, explanation: 'Событие: event ТипДелегата Имя;' },
+        { q: 'Зачем нужна проверка Notify?.Invoke()?', options: ['Для скорости', 'Чтобы избежать NullReferenceException', 'Для красоты', 'Так требует компилятор'], correct: 1, explanation: 'Если у события нет обработчиков, оно null. ?.Invoke() безопасно вызывает.' },
+        { q: 'Что нужно, чтобы метод соответствовал делегату?', options: ['Любое имя', 'Совпадение возвращаемого типа и параметров', 'Только возвращаемого типа', 'Ничего'], correct: 1, explanation: 'Совпадать должны и возвращаемый тип, и набор параметров (с учётом ref/in/out).' },
+        { q: 'Чем ещё может быть обработчик события, кроме метода?', options: ['Только методом', 'Лямбда-выражением и анонимным методом', 'Переменной int', 'Массивом'], correct: 1, explanation: 'Обработчиками могут быть методы, делегаты, анонимные методы, лямбда-выражения.' },
+        { q: 'Что позволяет класс AccountEventArgs?', options: ['Хранить список счетов', 'Передавать данные о событии (сообщение, сумму)', 'Создавать делегат', 'Управлять обработчиками'], correct: 1, explanation: 'Класс-аргумент передаёт данные: Message, Sum и т.д.' }
+      ]
+    },
+    {
+      id: 'l5',
+      title: 'Лекция 5. Файлы. Коллекции',
+      icon: '5️⃣',
+      sections: `
+        <h2>Классы File и FileInfo</h2>
+        <p><b>File</b> — статические методы: <code>Copy</code>, <code>Create</code>, <code>Delete</code>, <code>Move</code>, <code>Exists</code>, <code>ReadAllText</code>, <code>WriteAllText</code>, <code>AppendAllText</code>, <code>ReadAllLines</code>, <code>WriteAllLines</code>, <code>ReadAllBytes</code>, <code>WriteAllBytes</code>.</p>
+        <p><b>FileInfo</b> — экземплярный класс. Создаётся с путём, имеет свойства <code>Exists</code>, <code>Length</code>, <code>Name</code>, <code>FullName</code>, <code>Extension</code>, <code>Directory</code>, <code>DirectoryName</code>, методы <code>CopyTo</code>, <code>Create</code>, <code>Delete</code>, <code>MoveTo</code>.</p>
+        <pre>FileInfo fi = new FileInfo(@"C:\\app\\content.txt");
+if (fi.Exists) Console.WriteLine(fi.Length);</pre>
+
+        <h2>Пути</h2>
+        <ul>
+          <li>Абсолютные: <code>C:\\Users\\...\\file.txt</code> (Windows), <code>/Users/.../file.txt</code> (macOS/Linux).</li>
+          <li>Относительные: <code>MyDir\\content.txt</code>.</li>
+        </ul>
+
+        <h2>Чтение и запись</h2>
+        <p><b>Через File:</b></p>
+        <ul>
+          <li><code>ReadAllText(path)</code> — весь текст в строку;</li>
+          <li><code>ReadAllLines(path)</code> — массив строк;</li>
+          <li><code>ReadAllBytes(path)</code> — бинарный в массив байт;</li>
+          <li><code>WriteAllText(path, text)</code> — запись строки (перезапись);</li>
+          <li><code>AppendAllText(path, text)</code> — дозапись в конец;</li>
+          <li><code>WriteAllLines</code>, <code>AppendAllLines</code> — то же для массивов строк.</li>
+        </ul>
+        <p>Есть асинхронные версии (<code>...Async</code>). Можно задавать <b>кодировку</b>: <code>Encoding.Unicode</code>, <code>Encoding.GetEncoding("iso-8859-1")</code>.</p>
+
+        <h2>StreamWriter — запись</h2>
+        <pre>using (StreamWriter w = new StreamWriter(path, false)) // false — перезапись
+{
+    w.WriteLine(text);
+}</pre>
+        <p>Методы: <code>Write</code>, <code>WriteLine</code>, <code>Flush</code>, <code>Close</code>. Можно задать кодировку третьим параметром.</p>
+
+        <h2>StreamReader — чтение</h2>
+        <pre>using (StreamReader r = new StreamReader(path))
+{
+    string line;
+    while ((line = r.ReadLine()) != null)
+        Console.WriteLine(line);
+}</pre>
+        <p>Методы: <code>Read</code>, <code>ReadLine</code>, <code>ReadToEnd</code>, <code>Peek</code>, <code>Close</code>.</p>
+
+        <h2>FileStream</h2>
+        <p>Поток для низкоуровневой работы с файлами на уровне байтов. Для текстов обычно удобнее StreamReader/StreamWriter.</p>
+
+        <h2>Коллекции</h2>
+        <p>Пространство имён <code>System.Collections.Generic</code>.</p>
+        <p><b>List&lt;T&gt;</b> — простейший список:</p>
+        <pre>List&lt;string&gt; people = new List&lt;string&gt;() { "Tom", "Bob" };</pre>
+        <p>Свойства: <code>Count</code>, <code>Capacity</code>. Методы: <code>Add</code>, <code>AddRange</code>, <code>Insert</code>, <code>Remove</code>, <code>RemoveAt</code>, <code>RemoveAll</code>, <code>RemoveRange</code>, <code>Clear</code>, <code>Contains</code>, <code>Exists</code>, <code>Find</code>, <code>FindAll</code>, <code>IndexOf</code>, <code>GetRange</code>, <code>CopyTo</code>, <code>Reverse</code>, <code>Sort</code>.</p>
+
+        <h3>Другие коллекции</h3>
+        <ul>
+          <li><b>LinkedList&lt;T&gt;</b> — двусвязный список;</li>
+          <li><b>Queue&lt;T&gt;</b> — очередь (FIFO: первый пришёл — первый вышел);</li>
+          <li><b>Stack&lt;T&gt;</b> — стек (LIFO: последний пришёл — первый вышел);</li>
+          <li><b>Dictionary&lt;K, V&gt;</b> — словарь ключ-значение;</li>
+          <li><b>ObservableCollection</b> — уведомляет об изменениях;</li>
+          <li><b>Array</b>, <b>Span</b>.</li>
+        </ul>
+
+        <h3>Инициализация словаря</h3>
+        <pre>var dict = new Dictionary&lt;string, int&gt;
+{
+    { "Tom", 25 },
+    { "Bob", 30 }
+};</pre>
+        <p>Доступ: <code>dict["Tom"]</code>.</p>
+      `,
+      test: [
+        { q: 'Чем File отличается от FileInfo?', options: ['Ничем', 'File — статические методы, FileInfo — экземпляр', 'FileInfo быстрее', 'File только для чтения'], correct: 1, explanation: 'File — статический класс. FileInfo — экземплярный, создаётся для конкретного файла.' },
+        { q: 'Как прочитать весь текстовый файл в строку?', options: ['File.ReadAllText(path)', 'File.Read(path)', 'StreamReader.ReadLine()', 'File.Open()'], correct: 0, explanation: 'File.ReadAllText() читает весь файл и возвращает строку.' },
+        { q: 'Что делает AppendAllText?', options: ['Перезаписывает файл', 'Добавляет текст в конец файла', 'Удаляет файл', 'Читает файл'], correct: 1, explanation: 'AppendAllText добавляет текст в конец, не удаляя старое содержимое.' },
+        { q: 'Как читать файл построчно?', options: ['File.ReadAllText()', 'StreamReader.ReadLine() в цикле', 'File.ReadLine()', 'File.Open()'], correct: 1, explanation: 'Через StreamReader: while ((line = reader.ReadLine()) != null) { ... }' },
+        { q: 'Что такое List<T>?', options: ['Массив фиксированной длины', 'Динамический список однотипных объектов', 'Словарь', 'Очередь'], correct: 1, explanation: 'List<T> — обобщённый список с динамическим размером.' },
+        { q: 'Что такое Dictionary?', options: ['Список', 'Словарь ключ-значение', 'Стек', 'Массив'], correct: 1, explanation: 'Dictionary хранит пары ключ-значение и даёт быстрый доступ по ключу.' },
+        { q: 'Какая коллекция работает по принципу FIFO?', options: ['Stack', 'Queue', 'List', 'Dictionary'], correct: 1, explanation: 'Queue (очередь) — FIFO: первый пришёл, первый вышел.' },
+        { q: 'Какая коллекция работает по принципу LIFO?', options: ['Stack', 'Queue', 'List', 'Array'], correct: 0, explanation: 'Stack (стек) — LIFO: последний пришёл, первый вышел.' }
+      ]
+    },
+    {
+      id: 'l6',
+      title: 'Лекция 6. Разделение ресурсов. Исключения',
+      icon: '6️⃣',
+      sections: `
+        <h2>Разделение ресурсов. MemoryMappedFiles</h2>
+        <p>Технология общей (разделяемой) памяти между приложениями. Пространство имён <code>System.IO.MemoryMappedFiles</code>.</p>
+        <p>Классы:</p>
+        <ul>
+          <li><b>MemoryMappedFile</b> — создаёт или открывает участок разделяемой памяти;</li>
+          <li><b>MemoryMappedViewAccessor</b> — чтение/запись в этот участок.</li>
+        </ul>
+        <pre>// Создание
+MemoryMappedFile shm = MemoryMappedFile.CreateOrOpen("MemoryFile", size);
+using (var w = shm.CreateViewAccessor()) {
+    w.Write(0, size);
+    w.WriteArray&lt;char&gt;(4, message, 0, message.Length);
+}
+
+// Чтение из другого приложения
+MemoryMappedFile shm = MemoryMappedFile.OpenExisting("MemoryFile");
+using (var r = shm.CreateViewAccessor(0, 0, MemoryMappedFileAccess.Read)) {
+    size = r.ReadInt32(0);
+    ...
+}</pre>
+
+        <h2>Понятие исключения</h2>
+        <p><b>Исключение</b> — ошибка времени выполнения, прерывающая нормальный ход программы. Если не обработать — аварийное завершение.</p>
+        <p>Базовый тип — <code>Exception</code>. Свойства: <code>Message</code>, <code>InnerException</code>, <code>Source</code>, <code>StackTrace</code>, <code>TargetSite</code>.</p>
+        <p><b>Основные типы:</b></p>
+        <ul>
+          <li><code>DivideByZeroException</code> — деление на ноль;</li>
+          <li><code>IndexOutOfRangeException</code> — индекс вне диапазона;</li>
+          <li><code>ArgumentOutOfRangeException</code> — аргумент вне диапазона;</li>
+          <li><code>ArgumentException</code> — некорректный аргумент;</li>
+          <li><code>InvalidCastException</code> — недопустимое преобразование типа;</li>
+          <li><code>NullReferenceException</code> — обращение к null.</li>
+        </ul>
+
+        <h2>Конструкция try...catch...finally</h2>
+        <pre>try
+{
+    // код, где может быть исключение
+}
+catch (DivideByZeroException ex)
+{
+    Console.WriteLine(ex.Message);
+}
+finally
+{
+    // выполнится в любом случае
+}</pre>
+        <p>Обязателен только <code>try</code>. Без <code>catch</code> исключение не обрабатывается — программа аварийно завершается.</p>
+        <p><b>Формы catch:</b></p>
+        <ul>
+          <li><code>catch { }</code> — любое исключение;</li>
+          <li><code>catch (тип) { }</code> — только этого типа;</li>
+          <li><code>catch (тип имя) { }</code> — с доступом к объекту исключения;</li>
+          <li><code>catch when (условие)</code> — фильтр по условию.</li>
+        </ul>
+        <p><b>Порядок блоков catch</b>: от специализированных к базовым. <code>Exception</code> — в конце, иначе он перехватит всё.</p>
+
+        <h2>Обработка исключений и условные конструкции</h2>
+        <p>Многие ситуации можно предвидеть и обработать условием, а не try/catch.</p>
+        <p>Вместо <code>int.Parse(data)</code> использовать <code>int.TryParse(data, out var x)</code> — возвращает <code>bool</code>, не бросает исключение. Это <b>производительнее</b>, чем try/catch.</p>
+      `,
+      test: [
+        { q: 'Какой блок обязателен в try...catch...finally?', options: ['catch', 'finally', 'try', 'Все обязательны'], correct: 2, explanation: 'Обязателен только try. catch и finally — опциональны.' },
+        { q: 'Какой блок выполняется в любом случае?', options: ['try', 'catch', 'finally', 'Никакой'], correct: 2, explanation: 'finally выполняется всегда — и при исключении, и без него.' },
+        { q: 'Что произойдёт, если исключение возникло, но нет catch?', options: ['Программа продолжит работу', 'Программа аварийно завершится', 'Исключение игнорируется', 'Будет вызван finally'], correct: 1, explanation: 'Если исключение не обработано — CLR завершает программу аварийно.' },
+        { q: 'Как обработать только деление на ноль?', options: ['catch (Exception ex)', 'catch (DivideByZeroException)', 'catch (ArithmeticException)', 'if (x == 0)'], correct: 1, explanation: 'catch (DivideByZeroException) — обработает только этот тип.' },
+        { q: 'Как избежать try/catch при преобразовании строки в число?', options: ['int.Parse()', 'int.TryParse()', 'Convert.ToInt32()', 'string.ToNumber()'], correct: 1, explanation: 'int.TryParse() возвращает bool и не бросает исключение — быстрее try/catch.' },
+        { q: 'Где должны стоять блоки catch для базовых типов?', options: ['В начале', 'В конце, после специализированных', 'В любом месте', 'Не имеют значения'], correct: 1, explanation: 'catch для Exception идёт в конце, иначе перехватит все исключения.' },
+        { q: 'Что делает MemoryMappedFile?', options: ['Копирует файл', 'Создаёт участок разделяемой памяти между приложениями', 'Удаляет файл', 'Читает XML'], correct: 1, explanation: 'MemoryMappedFile создаёт участок памяти, к которому могут обращаться разные приложения.' },
+        { q: 'Какие свойства есть у Exception?', options: ['Message, StackTrace, InnerException', 'Length, Count', 'Name, Age', 'Key, Value'], correct: 0, explanation: 'Message — текст ошибки, StackTrace — трассировка, InnerException — вложенное исключение.' }
+      ]
+    },
+    {
+      id: 'l7',
+      title: 'Лекция 7. WinForms. Интерфейс',
+      icon: '7️⃣',
+      sections: `
+        <h2>Технологии интерфейсов .NET</h2>
+        <p>Для графических интерфейсов используются: Window Forms (WinForms), WPF, UWP. Самая простая — <b>WinForms</b>.</p>
+
+        <h2>Структура проекта WinForms</h2>
+        <ul>
+          <li><b>helloapp.csproj</b> — настройки проекта. Ключевые: <code>OutputType=WinExe</code>, <code>TargetFramework=net8.0-windows</code>, <code>UseWindowsForms=true</code>.</li>
+          <li><b>Form1.cs</b> — код формы (логика).</li>
+          <li><b>Form1.Designer.cs</b> — описание компонентов формы, сгенерированное дизайнером.</li>
+          <li><b>Form1.resx</b> — ресурсы формы.</li>
+          <li><b>Program.cs</b> — точка входа.</li>
+        </ul>
+
+        <h2>Program.cs</h2>
+        <pre>[STAThread]
+static void Main()
+{
+    ApplicationConfiguration.Initialize();
+    Application.Run(new Form1());
+}</pre>
+        <p><b>[STAThread]</b> — атрибут, нужный для корректной работы COM-компонентов Windows.</p>
+        <p><b>Application.Run(new Form1())</b> — запускает цикл сообщений и показывает форму.</p>
+
+        <h2>Основные свойства формы</h2>
+        <ul>
+          <li><b>Name</b> — имя класса формы;</li>
+          <li><b>Text</b> — заголовок окна;</li>
+          <li><b>BackColor</b>, <b>ForeColor</b> — цвета фона и текста;</li>
+          <li><b>Size</b>, <b>Width</b>, <b>Height</b> — размеры;</li>
+          <li><b>StartPosition</b> — начальная позиция: Manual, CenterScreen, WindowsDefaultLocation, CenterParent;</li>
+          <li><b>FormBorderStyle</b> — граница окна (None — без границы);</li>
+          <li><b>ControlBox</b>, <b>MaximizeBox</b>, <b>MinimizeBox</b> — кнопки окна;</li>
+          <li><b>TopMost</b> — поверх других окон;</li>
+          <li><b>Visible</b> — видимость;</li>
+          <li><b>WindowState</b> — Normal, Maximized, Minimized;</li>
+          <li><b>Icon</b>, <b>Cursor</b>, <b>Font</b>, <b>Opacity</b>.</li>
+        </ul>
+
+        <h2>События в WinForms</h2>
+        <p>У каждого компонента есть набор событий (Click, Load и др.). Обработчик создаётся двойным щелчком в дизайнере или программно: <code>this.Load += Form1_Load;</code></p>
+        <p><b>Сигнатура типичного обработчика:</b> <code>(object sender, EventArgs e)</code> — <code>sender</code> — источник события, <code>e</code> — данные события.</p>
+        <pre>private void button1_Click(object sender, EventArgs e)
+{
+    MessageBox.Show("Нажато!");
+}</pre>
+
+        <h2>Взаимодействие форм</h2>
+        <p>Через конструктор можно передать ссылку на другую форму:</p>
+        <pre>public Form2(Form1 f) { InitializeComponent(); f.BackColor = Color.Yellow; }
+// в Form1:
+Form2 newForm = new Form2(this);
+newForm.Show();</pre>
+        <p>Главная форма — та, что запускается в <code>Program.cs</code>. При её закрытии закрывается всё приложение.</p>
+      `,
+      test: [
+        { q: 'Что такое Form в WinForms?', options: ['Файл', 'Форма (окно) приложения', 'Кнопка', 'Текстовое поле'], correct: 1, explanation: 'Form — окно приложения, контейнер для элементов управления.' },
+        { q: 'Какой атрибут должен быть у метода Main в WinForms?', options: ['[STAThread]', '[MainThread]', '[Forms]', 'Не нужен'], correct: 0, explanation: '[STAThread] нужен для корректной работы COM-компонентов Windows.' },
+        { q: 'Что делает Application.Run(new Form1())?', options: ['Создаёт файл', 'Запускает цикл сообщений и показывает форму', 'Компилирует проект', 'Закрывает приложение'], correct: 1, explanation: 'Application.Run запускает цикл обработки сообщений Windows и показывает форму.' },
+        { q: 'Какие два параметра у типичного обработчика события?', options: ['(int x, int y)', '(object sender, EventArgs e)', '(string name, int id)', '(Form form, Button btn)'], correct: 1, explanation: 'sender — источник, e — данные события.' },
+        { q: 'Что означает свойство StartPosition = CenterScreen?', options: ['Форма в левом верхнем углу', 'Форма в центре экрана', 'Форма на весь экран', 'Форма без рамки'], correct: 1, explanation: 'CenterScreen — форма появляется по центру экрана.' },
+        { q: 'Где находится точка входа в WinForms-приложении?', options: ['Form1.cs', 'Form1.Designer.cs', 'Program.cs', 'App.config'], correct: 2, explanation: 'Program.cs содержит метод Main с Application.Run.' }
+      ]
+    },
+    {
+      id: 'l8',
+      title: 'Лекция 8. Тестирование. Валидация. Перспективы',
+      icon: '8️⃣',
+      sections: `
+        <h2>Добавление второй формы в проект</h2>
+        <p>Правой кнопкой по проекту → Add → Windows Form. Дать имя (Form2.cs).</p>
+        <p>Вызов второй формы из первой:</p>
+        <pre>Form2 newForm = new Form2();
+newForm.Show();</pre>
+
+        <h2>Взаимодействие между формами</h2>
+        <p>Передача ссылки через конструктор позволяет одной форме управлять другой:</p>
+        <pre>public Form2(Form1 f) { InitializeComponent(); f.BackColor = Color.Yellow; }</pre>
+
+        <h2>Валидация данных</h2>
+        <p>Проверка вводимых данных через атрибуты из <code>System.ComponentModel.DataAnnotations</code>:</p>
+        <pre>public class User
+{
+    [Required]
+    public string Id { get; set; }
+    [Required]
+    [StringLength(50, MinimumLength = 3)]
+    public string Name { get; set; }
+    [Required]
+    [Range(1, 100)]
+    public int Age { get; set; }
+}</pre>
+        <p><b>Основные атрибуты:</b></p>
+        <ul>
+          <li><b>Required</b> — обязательно. Свойство <code>AllowEmptyStrings</code> разрешает пустые строки;</li>
+          <li><b>StringLength</b> — макс/мин длина строки;</li>
+          <li><b>Range</b> — диапазон числовых значений;</li>
+          <li><b>RegularExpression</b> — соответствие регулярному выражению;</li>
+          <li><b>Compare</b> — сравнение с другим свойством (например, пароль и подтверждение);</li>
+          <li><b>Phone</b>, <b>EmailAddress</b>, <b>CreditCard</b>, <b>Url</b> — проверки формата;</li>
+          <li>У всех есть свойство <b>ErrorMessage</b> — своё сообщение об ошибке.</li>
+        </ul>
+
+        <h2>Проверка модели</h2>
+        <pre>var results = new List&lt;ValidationResult&gt;();
+var context = new ValidationContext(user);
+if (!Validator.TryValidateObject(user, context, results, true))
+{
+    foreach (var error in results)
+        Console.WriteLine(error.ErrorMessage);
+}</pre>
+        <p>Альтернатива — реализовать интерфейс <b>IValidatableObject</b> с методом <code>Validate()</code>. Тогда логика валидации пишется прямо в классе.</p>
+
+        <h2>Методы тестирования</h2>
+        <ul>
+          <li><b>Ручное</b> — запуск и проверка вручную;</li>
+          <li><b>Модульное</b> — тестирование отдельных методов/классов (xUnit, NUnit, MSTest);</li>
+          <li><b>Интеграционное</b> — проверка взаимодействия модулей;</li>
+          <li><b>Валидация модели</b> — через DataAnnotations.</li>
+        </ul>
+
+        <h2>Перспективы развития ПО</h2>
+        <ul>
+          <li>Кроссплатформенность (.NET работает на Windows, Linux, macOS, Android, iOS);</li>
+          <li>Рост веб-сервисов и облачных технологий;</li>
+          <li>Мобильная разработка;</li>
+          <li>Параллельные и асинхронные вычисления (PLINQ, async/await);</li>
+          <li>Развитие языков (лямбды, динамическое связывание, асинхронные методы);</li>
+          <li>Унификация через единую библиотеку классов и CLR.</li>
+        </ul>
+      `,
+      test: [
+        { q: 'Какой атрибут требует обязательного наличия значения?', options: ['[Range]', '[Required]', '[StringLength]', '[Compare]'], correct: 1, explanation: '[Required] указывает, что свойство обязательно должно иметь значение.' },
+        { q: 'Какой атрибут задаёт диапазон числовых значений?', options: ['[Required]', '[StringLength]', '[Range]', '[Compare]'], correct: 2, explanation: '[Range(1, 100)] — значение должно быть от 1 до 100.' },
+        { q: 'Что делает [Compare("Password")]?', options: ['Удаляет свойство', 'Сравнивает значение с указанным свойством', 'Задаёт длину', 'Копирует значение'], correct: 1, explanation: 'Сравнивает текущее свойство со свойством Password (например, подтверждение пароля).' },
+        { q: 'Какой метод проверяет валидность модели?', options: ['Validator.Validate()', 'Validator.TryValidateObject()', 'Model.Check()', 'Data.Verify()'], correct: 1, explanation: 'Validator.TryValidateObject(user, context, results, true) возвращает true/false.' },
+        { q: 'Что такое модульное тестирование?', options: ['Тестирование всего приложения', 'Тестирование отдельных методов/классов', 'Ручная проверка', 'Проверка ввода'], correct: 1, explanation: 'Модульное тестирование проверяет отдельные части (модули) программы.' },
+        { q: 'Какое направление НЕ относится к перспективам развития ПО?', options: ['Кроссплатформенность', 'Облачные технологии', 'Мобильная разработка', 'Возврат к перфокартам'], correct: 3, explanation: 'Перфокарты — прошлое. Перспективы: кроссплатформенность, облака, мобильные приложения, async.' }
+      ]
+    }
+  ],
+
+  // -------- ВОПРОСЫ К СЕССИИ --------
+  exam: {
+    title: 'Вопросы к сессии',
+    subtitle: '37 вопросов',
+    questions: [
+      { q: 'Язык C# и платформа .NET. Что такое C# и .NET?', options: ['C# — язык, .NET — платформа', 'C# — платформа, .NET — язык', 'Это одно и то же', 'C# — библиотека'], correct: 0, explanation: 'C# — объектно-ориентированный язык, созданный Microsoft под платформу .NET (2002 г.). .NET — платформа с CLR, единой библиотекой классов и поддержкой нескольких языков.' },
+      { q: 'Как осуществляется вывод в консоль в C#?', options: ['print()', 'Console.WriteLine() / Console.Write()', 'echo', 'printf()'], correct: 1, explanation: 'Console.WriteLine() — с переходом на новую строку, Console.Write() — без.' },
+      { q: 'Как осуществляется ввод с клавиатуры?', options: ['Console.Read()', 'Console.ReadLine()', 'Console.Input()', 'Console.Get()'], correct: 1, explanation: 'Console.ReadLine() возвращает строку. Для чисел — Convert.ToInt32() и др.' },
+      { q: 'Что такое условные операторы?', options: ['Операторы сравнения и логические', 'Арифметические операторы', 'Операторы присваивания', 'Операторы цикла'], correct: 0, explanation: 'Операции сравнения (==, !=, <, >, <=, >=) и логические (&&, ||, !, ^) возвращают bool.' },
+      { q: 'Как объявить массив в C#?', options: ['int m[3];', 'int[] m = new int[3];', 'array int m;', 'int m = new int[3];'], correct: 1, explanation: 'Квадратные скобки после типа: int[] m = new int[3];' },
+      { q: 'Какой цикл гарантированно выполнится хотя бы раз?', options: ['for', 'while', 'do...while', 'foreach'], correct: 2, explanation: 'do...while сначала выполняет тело, потом проверяет условие.' },
+      { q: 'Как получить длину строки?', options: ['s.Length', 's.Size', 's.Count', 'len(s)'], correct: 0, explanation: 'Length — свойство строки и массива.' },
+      { q: 'Что делает оператор break в цикле?', options: ['Пропускает итерацию', 'Полностью прерывает цикл', 'Продолжает', 'Перезапускает'], correct: 1, explanation: 'break полностью прерывает цикл. continue пропускает текущую итерацию.' },
+      { q: 'Что такое процедурное программирование?', options: ['Основа — процедуры, обмен через аргументы', 'Основа — объекты', 'Основа — функции', 'Основа — логика'], correct: 0, explanation: 'Процедурное программирование — исторически первый подход. Процедуры — именованные фрагменты, обмен через аргументы.' },
+      { q: 'Что такое модульное программирование?', options: ['Один большой модуль', 'Разбиение на функционально законченные модули со стандартным интерфейсом', 'Программирование модулей памяти', 'Только функции'], correct: 1, explanation: 'Модульное программирование — развитие процедурного, со стандартизацией интерфейса модулей.' },
+      { q: 'Что является основой ООП?', options: ['Инкапсуляция, наследование, полиморфизм', 'Циклы и условия', 'Функции и процедуры', 'Массивы и строки'], correct: 0, explanation: 'Три «кита» ООП: инкапсуляция, наследование, полиморфизм.' },
+      { q: 'Что такое управляемый код?', options: ['Код без ошибок', 'Код под управлением CLR со сборкой мусора', 'Код на C++', 'Код с комментариями'], correct: 1, explanation: 'Управляемый код — код .NET, контролируемый CLR: загрузка, сборка мусора.' },
+      { q: 'Что такое JIT-компиляция?', options: ['Компиляция всего кода', 'Компиляция CIL в машинный код при запуске, по обращению', 'Компиляция в CIL', 'Интерпретация'], correct: 1, explanation: 'JIT (Just-In-Time) компилирует CIL в машинный код при первом обращении к части программы.' },
+      { q: 'Что такое делегат?', options: ['Класс', 'Указатель на метод', 'Массив', 'Строка'], correct: 1, explanation: 'Делегат хранит ссылку на метод и позволяет его вызывать.' },
+      { q: 'Как присвоить делегату ссылку на метод?', options: ['Только через конструктор', 'Напрямую или через new', 'Через оператор new[]', 'Никак'], correct: 1, explanation: 'Оба способа: mes = Hello; или mes = new Message(Hello); — равноценны.' },
+      { q: 'Что нужно для соответствия метода делегату?', options: ['Любое имя', 'Совпадение возвращаемого типа и параметров', 'Только имени', 'Только количества параметров'], correct: 1, explanation: 'Совпадать должны возвращаемый тип и набор параметров (с учётом ref/in/out).' },
+      { q: 'Что такое событие?', options: ['Файл', 'Механизм уведомления о действии', 'Метод', 'Класс'], correct: 1, explanation: 'Событие сигнализирует системе о действии. Объявляется через event, обработчики через +=.' },
+      { q: 'Чем File отличается от FileInfo?', options: ['Ничем', 'File — статические методы, FileInfo — экземпляр', 'FileInfo только для чтения', 'File только для текста'], correct: 1, explanation: 'File — статический класс, FileInfo — экземплярный.' },
+      { q: 'Как прочитать весь текстовый файл?', options: ['File.ReadAllText(path)', 'File.Open()', 'File.Read()', 'File.Load()'], correct: 0, explanation: 'File.ReadAllText(path) читает весь файл и возвращает строку.' },
+      { q: 'Как записать строку в файл?', options: ['File.WriteAllText(path, text)', 'File.Save()', 'File.Dump()', 'File.Put()'], correct: 0, explanation: 'File.WriteAllText(path, text) перезаписывает файл. AppendAllText — дозапись.' },
+      { q: 'Что такое FileStream?', options: ['Класс для байтового потока', 'Класс для строк', 'Класс для массивов', 'Класс для коллекций'], correct: 0, explanation: 'FileStream — поток для низкоуровневой работы с файлами на уровне байтов.' },
+      { q: 'Чем StreamWriter отличается от File.WriteAllText?', options: ['Ничем', 'StreamWriter — поток, позволяет дозаписывать и работать с кодировкой', 'StreamWriter быстрее', 'File только для чтения'], correct: 1, explanation: 'StreamWriter даёт больше контроля: append, кодировка, потоковая запись.' },
+      { q: 'Что такое List<T>?', options: ['Массив', 'Динамический список', 'Словарь', 'Стек'], correct: 1, explanation: 'List<T> — обобщённый список с динамическим размером.' },
+      { q: 'Как инициализировать словарь?', options: ['new Dictionary<K,V>() { {"ключ", значение} }', 'new Dict()', 'new Map()', 'new Hash()'], correct: 0, explanation: 'var d = new Dictionary<string, int> { {"Tom", 25} };' },
+      { q: 'Какая коллекция работает по принципу FIFO?', options: ['Stack', 'Queue', 'List', 'Dictionary'], correct: 1, explanation: 'Queue — FIFO. Stack — LIFO.' },
+      { q: 'Что такое разделение ресурсов?', options: ['Деление файлов', 'Общая память между приложениями (MemoryMappedFiles)', 'Разделение на модули', 'Копирование данных'], correct: 1, explanation: 'MemoryMappedFiles позволяет приложениям обмениваться данными через общую память.' },
+      { q: 'Что такое система разделения файлов?', options: ['Система управления файлами через потоки и пути', 'Общая память', 'Класс File', 'Сеть'], correct: 0, explanation: 'Через File, FileInfo, StreamReader, StreamWriter — организация доступа к файлам.' },
+      { q: 'Что такое система управления пространствами?', options: ['Пространства имён (namespace)', 'Оперативная память', 'Диск', 'Файловая система'], correct: 0, explanation: 'namespace — логическая группировка классов (System.IO, System.Linq и др.).' },
+      { q: 'Что такое исключение?', options: ['Ошибка времени выполнения, прерывающая программу', 'Синтаксическая ошибка', 'Логическая ошибка', 'Предупреждение'], correct: 0, explanation: 'Исключение — ошибка времени выполнения. Если не обработать — аварийное завершение.' },
+      { q: 'Какой блок обязателен в try...catch...finally?', options: ['try', 'catch', 'finally', 'Все'], correct: 0, explanation: 'Обязателен только try. catch и finally — опциональны.' },
+      { q: 'Что произойдёт, если исключение не обработано?', options: ['Программа продолжит', 'Аварийно завершится', 'Игнорируется', 'Запишется в лог'], correct: 1, explanation: 'Если нет подходящего catch — программа аварийно завершается.' },
+      { q: 'Как избежать try/catch при преобразовании?', options: ['int.TryParse()', 'int.Parse()', 'Convert.ToInt32()', 'string.ToNumber()'], correct: 0, explanation: 'TryParse возвращает bool и не бросает исключение — быстрее try/catch.' },
+      { q: 'Какие технологии платформы .NET вы знаете?', options: ['ADO.NET, WPF, ASP.NET', 'Только C#', 'Только WinForms', 'Только LINQ'], correct: 0, explanation: 'ADO.NET (БД), WPF (графика), ASP.NET (веб), WinForms, Entity Framework, LINQ.' },
+      { q: 'Что такое библиотека классов .NET?', options: ['Единая библиотека для всех языков .NET', 'Библиотека только для C#', 'Компилятор', 'Отладчик'], correct: 0, explanation: 'Единая библиотека классов для всех языков .NET — одно из главных преимуществ платформы.' },
+      { q: 'Что такое интерфейс в WinForms?', options: ['Контракт класса', 'Форма (окно) с элементами управления', 'Файл', 'Массив'], correct: 1, explanation: 'Интерфейс пользователя — форма с элементами: кнопки, поля, меню. Также есть ООП-интерфейс (контракт).' },
+      { q: 'Как приложение взаимодействует с ОС?', options: ['Через API ОС: файлы, память, окна', 'Только через консоль', 'Никак', 'Через сеть'], correct: 0, explanation: 'Через System.IO, MemoryMappedFiles, System.Windows.Forms, [STAThread], Application.Run.' },
+      { q: 'Что такое событие в приложении?', options: ['Уведомление о действии, обрабатывается через += обработчики', 'Файл', 'Класс формы', 'Массив'], correct: 0, explanation: 'Событие — на основе делегатов. В WinForms: Click, Load и др. Сигнатура (object sender, EventArgs e).' },
+      { q: 'Что такое валидация модели?', options: ['Проверка корректности данных через атрибуты', 'Компиляция', 'Отладка', 'Логирование'], correct: 0, explanation: 'DataAnnotations: [Required], [Range], [StringLength], [Compare] и др.' },
+      { q: 'Какие методы тестирования бывают?', options: ['Ручное, модульное, интеграционное', 'Только ручное', 'Только автоматическое', 'Только валидация'], correct: 0, explanation: 'Ручное, модульное (xUnit, NUnit), интеграционное, валидация модели.' },
+      { q: 'Каковы перспективы развития ПО?', options: ['Кроссплатформенность, облака, async, мобильная разработка', 'Возврат к ассемблеру', 'Отказ от ООП', 'Только десктоп'], correct: 0, explanation: 'Кроссплатформенность, веб, облака, async/await, мобильные приложения, единая библиотека .NET.' }
+    ]
+  }
+};
+
+// ============================================================
+// СОСТОЯНИЕ
+// ============================================================
+
+const STORAGE_KEY = 'examlingo_v2';
+
+function defaultState() {
+  return {
+    xp: 0,
+    streak: 0,
+    lastDay: null,
+    lectureDone: {}, // lectureId: { score, total, attempts }
+    examDone: null   // { score, total, attempts }
+  };
+}
+
+let state = loadState();
+let view = { name: 'home' };
+let lesson = null;
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return Object.assign(defaultState(), JSON.parse(raw));
+  } catch (e) {}
+  return defaultState();
+}
+function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+function todayStr() { return new Date().toISOString().slice(0, 10); }
+
+function registerDay() {
+  const today = todayStr();
+  const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+  if (state.lastDay === today) return;
+  if (state.lastDay === yesterday) state.streak += 1;
+  else state.streak = 1;
+  state.lastDay = today;
+  saveState();
+}
+
+// ============================================================
+// РЕНДЕР
+// ============================================================
+
+const app = document.getElementById('app');
+
+function render() {
+  if (view.name === 'home') renderHome();
+  else if (view.name === 'course') renderCourse();
+  else if (view.name === 'lecture') renderLecture();
+  else if (view.name === 'lesson') renderLesson();
+  else if (view.name === 'complete') renderComplete();
+}
+
+function topbar(title, showBack, backAction) {
+  return `<div class="topbar">
+    ${showBack ? `<button class="back" onclick="${backAction}">←</button>` : '<div style="width:40px"></div>'}
+    <div class="title">${title}</div>
+    <div class="stat fire">🔥 ${state.streak}</div>
+    <div class="stat xp">⚡ ${state.xp}</div>
+  </div>`;
+}
+
+function renderHome() {
+  const totalLectures = COURSE.lectures.length;
+  const doneLectures = Object.keys(state.lectureDone).length;
+  const examPct = state.examDone ? Math.round(state.examDone.score / state.examDone.total * 100) : 0;
+  app.innerHTML = `
+    ${topbar('ExamLingo', false, '')}
+    <div class="container">
+      <h1 class="home-title">Привет 👋</h1>
+      <p class="home-sub">Готовься к пересдаче в формате Дуолинго: читай лекции, проходи тесты.</p>
+      <button class="section-card" onclick="goCourse()">
+        <div class="section-emoji">${COURSE.emoji}</div>
+        <div class="section-info">
+          <h3>${COURSE.name}</h3>
+          <p>${COURSE.description}</p>
+          <div class="progress-bar"><div style="width:${Math.round(doneLectures/totalLectures*100)}%"></div></div>
+        </div>
+      </button>
+      <button class="reset-btn" onclick="resetAll()">Сбросить прогресс</button>
+    </div>
+  `;
+}
+
+function renderCourse() {
+  const totalLectures = COURSE.lectures.length;
+  const doneLectures = Object.keys(state.lectureDone).length;
+  const examPct = state.examDone ? Math.round(state.examDone.score / state.examDone.total * 100) : 0;
+
+  app.innerHTML = `
+    ${topbar(COURSE.name, true, 'goHome()')}
+    <div class="container">
+      <h1 class="home-title" style="font-size:22px">Выбери раздел</h1>
+
+      <button class="section-card" onclick="goLectures()">
+        <div class="section-emoji">📖</div>
+        <div class="section-info">
+          <h3>Лекции</h3>
+          <p>${doneLectures} из ${totalLectures} пройдено</p>
+          <div class="progress-bar"><div style="width:${Math.round(doneLectures/totalLectures*100)}%"></div></div>
+        </div>
+      </button>
+
+      <button class="section-card" onclick="startExam()">
+        <div class="section-emoji">🎯</div>
+        <div class="section-info">
+          <h3>Вопросы к сессии</h3>
+          <p>${COURSE.exam.questions.length} вопросов — отдельный тест</p>
+          ${state.examDone ? `<div class="progress-bar"><div style="width:${examPct}%"></div></div>` : ''}
+        </div>
+      </button>
+    </div>
+  `;
+}
+
+function goLectures() {
+  const items = COURSE.lectures.map((l, i) => {
+    const done = state.lectureDone[l.id];
+    const scoreText = done ? `${done.score}/${done.total}` : '';
+    return `<button class="list-item ${done ? 'done' : ''}" onclick="openLecture('${l.id}')">
+      <div class="badge">${done ? '✓' : (i + 1)}</div>
+      <div class="body">
+        <h4>${l.title}</h4>
+        <p>${l.test.length} вопросов в тесте</p>
+      </div>
+      <div class="score">${scoreText}</div>
+    </button>`;
+  }).join('');
+
+  app.innerHTML = `
+    ${topbar('Лекции', true, 'goCourse()')}
+    <div class="container">
+      <p class="home-sub">Читай лекцию, потом проходи тест по ней.</p>
+      <div class="item-list">${items}</div>
+    </div>
+  `;
+}
+
+function openLecture(id) {
+  const l = COURSE.lectures.find(x => x.id === id);
+  app.innerHTML = `
+    ${topbar(l.title, true, 'goLectures()')}
+    <div class="container">
+      <div class="lecture-body">${l.sections}</div>
+      <button class="btn primary full" onclick="startLectureTest('${l.id}')">
+        Пройти тест по лекции →
+      </button>
+    </div>
+  `;
+}
+
+function startLectureTest(id) {
+  const l = COURSE.lectures.find(x => x.id === id);
+  lesson = {
+    kind: 'lecture',
+    id,
+    title: l.title,
+    questions: shuffle(l.test.map(q => ({ ...q }))),
+    current: 0,
+    correctCount: 0,
+    selected: null
+  };
+  view = { name: 'lesson' };
+  render();
+  window.scrollTo(0, 0);
+}
+
+function startExam() {
+  lesson = {
+    kind: 'exam',
+    id: 'exam',
+    title: 'Вопросы к сессии',
+    questions: shuffle(COURSE.exam.questions.map(q => ({ ...q }))),
+    current: 0,
+    correctCount: 0,
+    selected: null
+  };
+  view = { name: 'lesson' };
+  render();
+  window.scrollTo(0, 0);
+}
+
+function renderLesson() {
+  const q = lesson.questions[lesson.current];
+  const total = lesson.questions.length;
+  const pct = (lesson.current / total) * 100;
+  const selected = lesson.selected;
+
+  const answers = q.options.map((opt, i) => {
+    let cls = 'answer';
+    if (selected !== null) {
+      cls += ' disabled';
+      if (i === q.correct) cls += ' correct';
+      else if (i === selected) cls += ' wrong';
+    }
+    return `<button class="${cls}" ${selected === null ? `onclick="pickAnswer(${i})"` : ''}>${opt}</button>`;
+  }).join('');
+
+  const isCorrect = selected !== null && selected === q.correct;
+
+  app.innerHTML = `
+    ${topbar(lesson.title, true, 'confirmExit()')}
+    <div class="container" style="${selected !== null ? 'padding-bottom:220px' : ''}">
+      <div class="lesson-progress"><div style="width:${pct}%"></div></div>
+      <div class="q-text">${q.q}</div>
+      <div class="answers">${answers}</div>
+    </div>
+    ${selected !== null ? `
+      <div class="feedback ${isCorrect ? 'ok' : 'bad'}">
+        <div>
+          <div class="head">${isCorrect ? '✓ Верно!' : '✗ Неверно'}</div>
+          <div class="desc">${q.explanation}</div>
+        </div>
+        <button class="btn ${isCorrect ? 'primary' : 'wrong'}" onclick="nextQuestion()">
+          ${lesson.current + 1 < total ? 'Далее' : 'Завершить'}
+        </button>
+      </div>
+    ` : ''}
+  `;
+}
+
+function renderComplete() {
+  const total = lesson.questions.length;
+  const correct = lesson.correctCount;
+  const pct = Math.round((correct / total) * 100);
+  const emoji = pct === 100 ? '🏆' : pct >= 70 ? '🎉' : '💪';
+  const title = pct === 100 ? 'Идеально!' : pct >= 70 ? 'Хороший результат!' : 'Есть куда расти';
+
+  const backTarget = lesson.kind === 'exam' ? 'goCourse()' : 'goLectures()';
+
+  app.innerHTML = `
+    ${topbar('Результат', true, backTarget)}
+    <div class="container">
+      <div class="complete">
+        <div class="big-emoji">${emoji}</div>
+        <h2>${title}</h2>
+        <p class="sub">${pct}% правильных ответов</p>
+        <div class="stats-grid">
+          <div class="stat-box">
+            <div class="icon">✅</div>
+            <div class="val">${correct}/${total}</div>
+            <div class="lbl">Правильно</div>
+          </div>
+          <div class="stat-box">
+            <div class="icon">⚡</div>
+            <div class="val">+${correct * 10}</div>
+            <div class="lbl">XP</div>
+          </div>
+          <div class="stat-box">
+            <div class="icon">🔥</div>
+            <div class="val">${state.streak}</div>
+            <div class="lbl">Стрик</div>
+          </div>
+        </div>
+        <button class="btn primary full" style="margin-bottom:10px" onclick="${backTarget}">К списку</button>
+        <button class="btn ghost full" onclick="${lesson.kind === 'exam' ? 'startExam()' : `startLectureTest('${lesson.id}')`}">Пройти заново</button>
+      </div>
+    </div>
+  `;
+}
+
+// ============================================================
+// НАВИГАЦИЯ
+// ============================================================
+
+function goHome() { view = { name: 'home' }; render(); window.scrollTo(0,0); }
+function goCourse() { view = { name: 'course' }; render(); window.scrollTo(0,0); }
+function goLectures() { view = { name: 'lectures' }; render(); window.scrollTo(0,0); }
+
+function pickAnswer(idx) {
+  if (lesson.selected !== null) return;
+  lesson.selected = idx;
+  if (idx === lesson.questions[lesson.current].correct) lesson.correctCount += 1;
+  render();
+}
+
+function nextQuestion() {
+  if (lesson.current + 1 < lesson.questions.length) {
+    lesson.current += 1;
+    lesson.selected = null;
+    render();
+    window.scrollTo(0, 0);
+  } else {
+    finishLesson();
+  }
+}
+
+function finishLesson() {
+  const total = lesson.questions.length;
+  const correct = lesson.correctCount;
+
+  if (lesson.kind === 'exam') {
+    const prev = state.examDone || { score: 0, attempts: 0 };
+    state.examDone = { score: Math.max(prev.score, correct), total, attempts: prev.attempts + 1 };
+  } else {
+    const prev = state.lectureDone[lesson.id] || { score: 0, total, attempts: 0 };
+    state.lectureDone[lesson.id] = { score: Math.max(prev.score, correct), total, attempts: prev.attempts + 1 };
+  }
+  state.xp += correct * 10;
+  registerDay();
+  saveState();
+  view = { name: 'complete' };
+  render();
+  window.scrollTo(0, 0);
+}
+
+function confirmExit() {
+  if (confirm('Выйти? Прогресс не сохранится.')) {
+    if (lesson && lesson.kind === 'exam') goCourse();
+    else goLectures();
+  }
+}
+
+function resetAll() {
+  if (confirm('Сбросить весь прогресс?')) {
+    state = defaultState();
+    saveState();
+    render();
+  }
+}
+
+// ============================================================
+// УТИЛИТЫ
+// ============================================================
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+// Регистрация просмотра лекций (для роутинга lectures нужен отдельный рендер)
+// Переопределяем render, чтобы учесть lectures
+const _oldRender = render;
+render = function() {
+  if (view.name === 'lectures') return renderLecturesList();
+  return _oldRender();
+};
+
+function renderLecturesList() {
+  const items = COURSE.lectures.map((l, i) => {
+    const done = state.lectureDone[l.id];
+    const scoreText = done ? `${done.score}/${done.total}` : '';
+    return `<button class="list-item ${done ? 'done' : ''}" onclick="openLecture('${l.id}')">
+      <div class="badge">${done ? '✓' : (i + 1)}</div>
+      <div class="body">
+        <h4>${l.title}</h4>
+        <p>${l.test.length} вопросов в тесте</p>
+      </div>
+      <div class="score">${scoreText}</div>
+    </button>`;
+  }).join('');
+
+  app.innerHTML = `
+    ${topbar('Лекции', true, 'goCourse()')}
+    <div class="container">
+      <p class="home-sub">Читай лекцию, потом проходи тест по ней.</p>
+      <div class="item-list">${items}</div>
+    </div>
+  `;
+}
+
+// ============================================================
+// СТАРТ
+// ============================================================
+
+(function initStreak() {
+  if (state.lastDay) {
+    const today = todayStr();
+    const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+    if (state.lastDay !== today && state.lastDay !== yesterday) {
+      state.streak = 0;
+      saveState();
+    }
+  }
+})();
+
+render();
+
+</script>
+</body>
+</html>
